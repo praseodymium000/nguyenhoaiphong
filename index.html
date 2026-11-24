@@ -1,0 +1,1833 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+  <title>NGUYỄN HOÀI PHONG — KIẾN TRÚC SƯ</title>
+  <meta name="description" content="Portfolio cá nhân Kiến trúc sư Nguyễn Hoài Phong — Tân Phú, thành phố Hồ Chí Minh." />
+
+  <!-- Google Fonts hỗ trợ tiếng Việt sắc nét -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Be Vietnam Pro"', 'sans-serif'],
+            display: ['"Chakra Petch"', '"Be Vietnam Pro"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            midnight: {
+              950: '#030812',
+              900: '#061021',
+              800: '#0a142a',
+              700: '#102040',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- ==========================================================================
+       MODULE 01: KHỐI ĐỊNH DẠNG GIAO DIỆN (CSS / FUTURISTIC BLUEPRINT THEME)
+       - Tinh chỉnh màu sắc, hiệu ứng kính mờ, khung CAD và chuyển động tại đây.
+       ========================================================================== -->
+  <style id="theme-styles-module">
+    :root {
+      --bg-deep: #030812;
+      --bg-surface: #061021;
+      --accent-sky: #38bdf8;
+      --accent-cyan: #22d3ee;
+      --text-primary: #f8fafc;
+      --text-muted: #94a3b8;
+      --grid-minor: rgba(56, 189, 248, 0.05);
+      --grid-major: rgba(34, 211, 238, 0.11);
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      background-color: var(--bg-deep);
+      color: var(--text-primary);
+      font-family: 'Be Vietnam Pro', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    /* Typography co giãn linh hoạt giữa Mobile và PC */
+    .fluid-hero-title { font-size: clamp(2rem, 5vw, 4rem); line-height: 1.12; }
+    .fluid-page-title { font-size: clamp(1.75rem, 4vw, 3.2rem); line-height: 1.15; }
+    .fluid-section-title { font-size: clamp(1.35rem, 2.8vw, 2.15rem); line-height: 1.22; }
+    .fluid-card-title { font-size: clamp(1.1rem, 1.9vw, 1.4rem); line-height: 1.3; }
+    .fluid-body-text { font-size: clamp(0.925rem, 1.15vw, 1.02rem); line-height: 1.7; }
+
+    /* Lưới tọa độ bản vẽ kiến trúc nền */
+    .blueprint-grid {
+      background-color: var(--bg-deep);
+      background-image:
+        linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px),
+        linear-gradient(to right, var(--grid-minor) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-minor) 1px, transparent 1px);
+      background-size: 160px 160px, 160px 160px, 32px 32px, 32px 32px;
+    }
+
+    /* Bề mặt kính mờ kiến trúc */
+    .arch-glass {
+      background: rgba(10, 20, 42, 0.74);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    .arch-header-glass {
+      background: rgba(4, 8, 18, 0.9);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(34, 211, 238, 0.18);
+      padding-top: var(--safe-top);
+    }
+
+    /* Khung kỹ thuật CAD kèm dấu thập tọa độ 4 góc */
+    .cad-frame {
+      position: relative;
+      border: 1px solid rgba(56, 189, 248, 0.22);
+      background: linear-gradient(180deg, rgba(10, 20, 42, 0.84) 0%, rgba(4, 8, 18, 0.94) 100%);
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .cad-frame:hover {
+      border-color: rgba(34, 211, 238, 0.55);
+      box-shadow: 0 0 28px rgba(34, 211, 238, 0.08);
+    }
+
+    .cad-corner {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .cad-corner::before, .cad-corner::after {
+      content: '';
+      position: absolute;
+      background-color: #22d3ee;
+    }
+    .cad-corner::before { width: 10px; height: 1px; top: 4.5px; left: 0; }
+    .cad-corner::after { width: 1px; height: 10px; top: 0; left: 4.5px; }
+    .cad-tl { top: -5px; left: -5px; }
+    .cad-tr { top: -5px; right: -5px; }
+    .cad-bl { bottom: -5px; left: -5px; }
+    .cad-br { bottom: -5px; right: -5px; }
+
+    /* Thanh tiến trình cuộn laser trên cùng */
+    #laser-scroll-progress {
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      height: 2px;
+      width: 0%;
+      background: linear-gradient(90deg, #38bdf8, #22d3ee, #a5f3fc);
+      box-shadow: 0 0 10px rgba(34, 211, 238, 0.9);
+      pointer-events: none;
+      transition: width 0.08s linear;
+    }
+
+    /* Tia quét laser dọc khung ảnh */
+    @keyframes laserSweep {
+      0% { transform: translateY(-100%); opacity: 0; }
+      20% { opacity: 0.8; }
+      80% { opacity: 0.8; }
+      100% { transform: translateY(500%); opacity: 0; }
+    }
+    .laser-scanline {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #22d3ee, transparent);
+      box-shadow: 0 0 10px rgba(34, 211, 238, 0.85);
+      animation: laserSweep 5s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 6;
+    }
+
+    /* Con trỏ ngắm tọa độ trên PC Desktop */
+    @media (hover: hover) and (pointer: fine) {
+      body.pc-cursor-enabled,
+      body.pc-cursor-enabled a,
+      body.pc-cursor-enabled button,
+      body.pc-cursor-enabled [data-cursor] {
+        cursor: none !important;
+      }
+    }
+
+    #cad-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate3d(-120px, -120px, 0);
+      will-change: transform;
+    }
+    #cad-cursor-dot {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 4px;
+      margin: -2px 0 0 -2px;
+      border-radius: 9999px;
+      background-color: #22d3ee;
+      box-shadow: 0 0 8px #22d3ee;
+      pointer-events: none;
+      z-index: 10000;
+      transform: translate3d(-120px, -120px, 0);
+    }
+    @media (hover: none), (pointer: coarse) {
+      #cad-cursor, #cad-cursor-dot { display: none !important; }
+    }
+
+    .cad-reticle {
+      width: 32px;
+      height: 32px;
+      margin: -16px 0 0 -16px;
+      border: 1px solid rgba(34, 211, 238, 0.75);
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    #cad-cursor.is-active .cad-reticle {
+      width: 66px;
+      height: 66px;
+      margin: -33px 0 0 -33px;
+      border-color: #22d3ee;
+      background-color: rgba(34, 211, 238, 0.08);
+      transform: rotate(45deg);
+    }
+    .cad-cursor-tag {
+      position: absolute;
+      top: 38px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: #22d3ee;
+      background: rgba(4, 8, 18, 0.95);
+      border: 1px solid rgba(34, 211, 238, 0.45);
+      padding: 2px 7px;
+      border-radius: 4px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    #cad-cursor.has-tag .cad-cursor-tag { opacity: 1; }
+
+    /* Màn trập kiến trúc chuyển trang */
+    #shutter-transition {
+      position: fixed;
+      inset: 0;
+      z-index: 9500;
+      pointer-events: none;
+      display: grid;
+      grid-template-rows: repeat(4, 1fr);
+    }
+    .shutter-panel {
+      background: #040812;
+      border-bottom: 1px solid rgba(34, 211, 238, 0.32);
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 0.34s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+    .shutter-panel:nth-child(2) { transition-delay: 0.03s; }
+    .shutter-panel:nth-child(3) { transition-delay: 0.06s; }
+    .shutter-panel:nth-child(4) { transition-delay: 0.09s; }
+    #shutter-transition.is-closing .shutter-panel { transform: scaleX(1); transform-origin: left center; }
+    #shutter-transition.is-opening .shutter-panel { transform: scaleX(0); transform-origin: right center; }
+
+    #shutter-hud {
+      position: fixed;
+      inset: 0;
+      z-index: 9501;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      text-align: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.18s ease;
+    }
+    #shutter-transition.is-closing #shutter-hud { opacity: 1; }
+
+    /* Hiệu ứng sáng trượt & sóng xung kích trên nút bấm */
+    .btn-shine {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.22s ease, box-shadow 0.25s ease, border-color 0.25s ease, background-color 0.25s ease;
+    }
+    .btn-shine::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -120%;
+      width: 60%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+      transform: skewX(-22deg);
+      transition: left 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+    }
+    .btn-shine:hover::after,
+    .btn-shine:active::after {
+      left: 160%;
+    }
+
+    .shockwave-ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(34, 211, 238, 0.55) 0%, transparent 70%);
+      transform: scale(0);
+      animation: shockwaveExpand 0.55s ease-out forwards;
+      pointer-events: none;
+      z-index: 15;
+    }
+    @keyframes shockwaveExpand {
+      to { transform: scale(3.2); opacity: 0; }
+    }
+
+    /* Thẻ nghiêng 3D (Tilt Card) */
+    .tilt-card {
+      transform-style: preserve-3d;
+      transition: transform 0.18s ease-out, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    .tilt-glow {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(400px circle at var(--gx, 50%) var(--gy, 50%), rgba(34, 211, 238, 0.14), transparent 65%);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      z-index: 4;
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .tilt-card:hover .tilt-glow { opacity: 1; }
+    }
+
+    /* Hiệu ứng xuất hiện khi cuộn (Scroll Reveal) */
+    .reveal-on-scroll {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .reveal-on-scroll.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Thanh gạch chân trượt động Header PC & Nút Hamburger Mobile */
+    #nav-active-indicator {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #38bdf8, #22d3ee);
+      box-shadow: 0 0 10px rgba(34, 211, 238, 0.85);
+      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), width 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+      pointer-events: none;
+    }
+
+    .hamburger-line { transition: transform 0.28s ease, opacity 0.2s ease, width 0.28s ease; transform-origin: center; }
+    #mobile-drawer-toggle.is-open .line-top { transform: translateY(5px) rotate(45deg); }
+    #mobile-drawer-toggle.is-open .line-mid { opacity: 0; }
+    #mobile-drawer-toggle.is-open .line-bot { transform: translateY(-5px) rotate(-45deg); width: 16px; }
+
+    /* Trường nhập liệu HUD */
+    .hud-input {
+      background: rgba(3, 8, 18, 0.86);
+      border: 1px solid rgba(56, 189, 248, 0.24);
+      color: #f8fafc;
+      transition: border-color 0.22s ease, box-shadow 0.22s ease;
+    }
+    .hud-input::placeholder { color: #64748b; }
+    .hud-input:focus {
+      outline: none;
+      border-color: #22d3ee;
+      box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.14);
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #040812; }
+    ::-webkit-scrollbar-thumb { background: #102040; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #22d3ee; }
+  </style>
+</head>
+<body class="blueprint-grid text-slate-100 antialiased selection:bg-cyan-400/30 selection:text-cyan-200">
+
+  <!-- Con trỏ ngắm tọa độ (PC Desktop) -->
+  <div id="cad-cursor" aria-hidden="true">
+    <div class="cad-reticle">
+      <svg class="w-3.5 h-3.5 text-cyan-300/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+        <line x1="12" y1="2" x2="12" y2="6" /><line x1="12" y1="18" x2="12" y2="22" />
+        <line x1="2" y1="12" x2="6" y2="12" /><line x1="18" y1="12" x2="22" y2="12" />
+      </svg>
+    </div>
+    <div id="cad-cursor-tag" class="cad-cursor-tag">XEM</div>
+  </div>
+  <div id="cad-cursor-dot" aria-hidden="true"></div>
+
+  <!-- Màn trập chuyển trang kiến trúc -->
+  <div id="shutter-transition" aria-hidden="true">
+    <div class="shutter-panel"></div>
+    <div class="shutter-panel"></div>
+    <div class="shutter-panel"></div>
+    <div class="shutter-panel"></div>
+    <div id="shutter-hud">
+      <div class="font-mono text-[11px] tracking-[0.26em] text-cyan-400 mb-1.5">NHP // ARCHITECTURAL VIEWPORT</div>
+      <div id="shutter-route-label" class="font-display text-lg sm:text-2xl font-bold tracking-wider text-white uppercase">ĐANG TẢI...</div>
+    </div>
+  </div>
+
+  <!-- Thanh điều hướng cố định (Fixed Header) -->
+  <header class="fixed top-0 left-0 right-0 z-50 arch-header-glass">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <!-- Logo nhận diện -->
+        <a href="#home" onclick="navigateTo('home'); return false;" data-cursor="TRANG CHỦ"
+           class="btn-shine group flex items-center gap-3 py-1.5 px-2 -ml-2 rounded-xl focus:outline-none">
+          <div class="w-10 h-10 rounded-xl border border-cyan-400/50 bg-midnight-800 flex items-center justify-center group-hover:border-cyan-300 transition-colors shrink-0">
+            <svg class="w-6 h-6 text-cyan-400" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5">
+              <polygon points="16,3 29,10 29,22 16,29 3,22 3,10" />
+              <polyline points="8,20 8,12 16,20 16,12" stroke="#f8fafc" stroke-width="1.6" />
+              <polyline points="20,20 20,12 25,12 25,16 20,16" stroke="#22d3ee" stroke-width="1.6" />
+            </svg>
+          </div>
+          <div>
+            <div class="font-display text-sm sm:text-base font-bold tracking-[0.14em] text-white group-hover:text-cyan-300 transition-colors">
+              NHP <span class="text-cyan-400">//</span> ARCH
+            </div>
+            <div class="font-mono text-[10px] tracking-[0.12em] text-slate-400">
+              NGUYỄN HOÀI PHONG
+            </div>
+          </div>
+        </a>
+
+        <!-- Menu Desktop -->
+        <nav id="desktop-nav" class="hidden md:flex items-center gap-1 lg:gap-2 relative h-full" aria-label="Điều hướng chính">
+          <button onclick="navigateTo('home')" data-nav="home" data-cursor="TRANG CHỦ"
+                  class="nav-link btn-shine min-h-[44px] px-4 rounded-lg font-mono text-xs tracking-widest uppercase text-slate-300 hover:text-cyan-300 flex items-center gap-1.5">
+            <span class="text-cyan-400/80">01.</span> Trang chủ
+          </button>
+          <button onclick="goToHomeSection('home-projects')" data-nav="projects" data-cursor="CÔNG TRÌNH"
+                  class="nav-link btn-shine min-h-[44px] px-4 rounded-lg font-mono text-xs tracking-widest uppercase text-slate-300 hover:text-cyan-300 flex items-center gap-1.5">
+            <span class="text-cyan-400/80">02.</span> Công trình <span class="text-cyan-400 font-semibold">[06]</span>
+          </button>
+          <button onclick="navigateTo('about')" data-nav="about" data-cursor="HỒ SƠ KTS"
+                  class="nav-link btn-shine min-h-[44px] px-4 rounded-lg font-mono text-xs tracking-widest uppercase text-slate-300 hover:text-cyan-300 flex items-center gap-1.5">
+            <span class="text-cyan-400/80">03.</span> Hồ sơ KTS
+          </button>
+          <button onclick="goToHomeSection('home-contact')" data-nav="contact" data-cursor="LIÊN HỆ"
+                  class="nav-link btn-shine min-h-[44px] px-4 rounded-lg font-mono text-xs tracking-widest uppercase text-slate-300 hover:text-cyan-300 flex items-center gap-1.5">
+            <span class="text-cyan-400/80">04.</span> Liên hệ
+          </button>
+          <span id="nav-active-indicator" class="opacity-0"></span>
+        </nav>
+
+        <!-- Tọa độ chuột HUD (PC) & Nút mở Menu Mobile -->
+        <div class="flex items-center gap-3">
+          <div class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-sky-400/20 bg-midnight-800/80 font-mono text-[11px] text-slate-400">
+            <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+            <span id="hud-mouse-coords">X:0000 Y:0000</span>
+          </div>
+
+          <button id="mobile-drawer-toggle" onclick="toggleMobileDrawer()" aria-label="Mở menu điều hướng" aria-expanded="false"
+                  class="md:hidden btn-shine w-11 h-11 rounded-xl border border-sky-400/30 bg-midnight-800/90 text-slate-100 hover:border-cyan-400 flex items-center justify-center">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <line class="hamburger-line line-top" x1="4" y1="7" x2="20" y2="7" />
+              <line class="hamburger-line line-mid" x1="4" y1="12" x2="20" y2="12" />
+              <line class="hamburger-line line-bot" x1="9" y1="17" x2="20" y2="17" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="laser-scroll-progress" aria-hidden="true"></div>
+  </header>
+
+  <!-- Ngăn kéo điều hướng trên Điện thoại -->
+  <div id="mobile-nav-drawer"
+       style="padding-bottom: calc(1.5rem + var(--safe-bottom));"
+       class="fixed inset-0 top-16 z-40 md:hidden bg-midnight-950/98 backdrop-blur-2xl transform translate-x-full transition-transform duration-300 ease-out overflow-y-auto">
+    <div class="min-h-full px-5 py-6 flex flex-col justify-between gap-6">
+      <div class="space-y-2.5">
+        <div class="font-mono text-[11px] tracking-[0.2em] text-cyan-400 uppercase px-1 mb-2">// ĐIỀU HƯỚNG</div>
+        <button onclick="navigateTo('home'); toggleMobileDrawer(false);" data-mobile-nav="home"
+                class="mobile-nav-btn btn-shine w-full min-h-[50px] px-4 py-3 rounded-xl border border-slate-800 bg-midnight-800/80 text-left font-mono text-sm uppercase text-slate-200 flex items-center justify-between">
+          <span>01. Trang chủ</span><span class="text-cyan-400">→</span>
+        </button>
+        <button onclick="navigateTo('about'); toggleMobileDrawer(false);" data-mobile-nav="about"
+                class="mobile-nav-btn btn-shine w-full min-h-[50px] px-4 py-3 rounded-xl border border-slate-800 bg-midnight-800/80 text-left font-mono text-sm uppercase text-slate-200 flex items-center justify-between">
+          <span>02. Hồ sơ KTS</span><span class="text-cyan-400">→</span>
+        </button>
+        <button onclick="goToHomeSection('home-contact'); toggleMobileDrawer(false);" data-mobile-nav="contact"
+                class="mobile-nav-btn btn-shine w-full min-h-[50px] px-4 py-3 rounded-xl border border-slate-800 bg-midnight-800/80 text-left font-mono text-sm uppercase text-slate-200 flex items-center justify-between">
+          <span>03. Liên hệ</span><span class="text-cyan-400">→</span>
+        </button>
+
+        <div class="pt-3">
+          <div class="font-mono text-[11px] tracking-[0.2em] text-sky-400 uppercase px-1 mb-2">// 06 CÔNG TRÌNH ĐỘC LẬP</div>
+          <div id="mobile-projects-quicklist" class="grid grid-cols-1 gap-2"></div>
+        </div>
+      </div>
+
+      <div class="p-4 rounded-xl border border-sky-400/20 bg-midnight-800/60 font-mono text-xs text-slate-300 space-y-1">
+        <div class="text-white font-semibold">NGUYỄN HOÀI PHONG — KIẾN TRÚC SƯ</div>
+        <div>SĐT: <a href="tel:0346902605" class="text-cyan-300 underline">0346 902 605</a></div>
+        <div>Email: <a href="mailto:nguyenhoaiphong.kts@gmail.com" class="text-cyan-300 underline break-all">nguyenhoaiphong.kts@gmail.com</a></div>
+        <div>Địa chỉ: Tân Phú, thành phố Hồ Chí Minh</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Khung hiển thị nội dung trang hiện tại -->
+  <main id="page-viewport" class="relative z-10 pt-20 md:pt-24 min-h-[calc(100vh-120px)]"></main>
+
+  <!-- Footer tinh gọn -->
+  <footer style="padding-bottom: var(--safe-bottom);" class="relative z-10 border-t border-sky-400/15 bg-midnight-950/90 mt-14">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <div class="font-display text-sm font-bold tracking-[0.14em] text-white">
+          NGUYỄN HOÀI PHONG <span class="text-cyan-400">//</span> KIẾN TRÚC SƯ
+        </div>
+        <div class="font-mono text-xs text-slate-400 mt-0.5">Tân Phú, thành phố Hồ Chí Minh</div>
+      </div>
+      <div class="flex flex-wrap items-center gap-x-5 gap-y-1 font-mono text-xs text-slate-300">
+        <a href="tel:0346902605" class="min-h-[40px] inline-flex items-center hover:text-cyan-300">0346 902 605</a>
+        <a href="mailto:nguyenhoaiphong.kts@gmail.com" class="min-h-[40px] inline-flex items-center hover:text-cyan-300 break-all">nguyenhoaiphong.kts@gmail.com</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal Lightbox phóng to ảnh công trình -->
+  <div id="lightbox-modal"
+       style="padding-top: calc(1rem + var(--safe-top)); padding-bottom: calc(1rem + var(--safe-bottom));"
+       class="fixed inset-0 z-[9000] hidden bg-midnight-950/96 backdrop-blur-2xl flex flex-col justify-between px-4 sm:px-8"
+       role="dialog" aria-modal="true" aria-label="Xem ảnh công trình">
+    <div class="flex items-center justify-between gap-4 border-b border-sky-400/20 pb-3">
+      <div class="font-mono text-xs sm:text-sm text-cyan-400 truncate">
+        <span id="lb-counter" class="font-bold">01 / 04</span> — <span id="lb-title" class="text-white">Tiêu đề</span>
+      </div>
+      <button onclick="closeLightbox()" data-cursor="ĐÓNG [ESC]" aria-label="Đóng Lightbox"
+              class="btn-shine w-11 h-11 rounded-xl border border-slate-700 bg-midnight-800 text-slate-200 hover:border-cyan-400 flex items-center justify-center shrink-0">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    </div>
+
+    <div id="lb-touch-area" class="relative flex-1 flex items-center justify-center my-3 overflow-hidden select-none">
+      <button onclick="stepLightbox(-1)" data-cursor="TRƯỚC" aria-label="Ảnh trước"
+              class="btn-shine absolute left-1 sm:left-4 z-10 w-11 h-11 rounded-full arch-glass text-cyan-300 hover:border-cyan-400 flex items-center justify-center">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6" /></svg>
+      </button>
+
+      <div id="lb-stage" class="w-full max-w-5xl max-h-[72vh] flex items-center justify-center rounded-2xl overflow-hidden border border-cyan-400/30 bg-midnight-900 shadow-2xl"></div>
+
+      <button onclick="stepLightbox(1)" data-cursor="SAU" aria-label="Ảnh tiếp theo"
+              class="btn-shine absolute right-1 sm:right-4 z-10 w-11 h-11 rounded-full arch-glass text-cyan-300 hover:border-cyan-400 flex items-center justify-center">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6" /></svg>
+      </button>
+    </div>
+
+    <div class="text-center font-mono text-xs text-slate-300 max-w-2xl mx-auto">
+      <p id="lb-caption">Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.</p>
+      <p class="text-[10px] text-slate-500 mt-1">PC: Phím ← / → hoặc ESC • Mobile: Vuốt trái / phải</p>
+    </div>
+  </div>
+
+  <!-- Khung thông báo Toast -->
+  <div id="hud-toast-container" style="bottom: calc(1.25rem + var(--safe-bottom));"
+       class="fixed right-4 left-4 sm:left-auto sm:right-6 z-[9600] flex flex-col items-end gap-2 pointer-events-none"></div>
+
+  <!-- ==========================================================================
+       MODULE 02: KHỐI DỮ LIỆU NỘI DUNG (SITE_DATA)
+       - Thay đổi tên công trình, tiêu đề, nội dung mô tả và đường dẫn ảnh tại đây.
+       ========================================================================== -->
+  <script id="site-data-module">
+    const SITE_DATA = {
+      architect: {
+        fullName: "Nguyễn Hoài Phong",
+        roleTitle: "Kiến trúc sư",
+        // Cụm thông tin tốt nghiệp chỉ hiển thị duy nhất 1 lần ở trang Hồ sơ KTS (#about)
+        graduation: "Tốt nghiệp Đại học Kiến trúc TP. Hồ Chí Minh (UAH) năm 2023",
+        phone: "0346 902 605",
+        phoneHref: "0346902605",
+        email: "nguyenhoaiphong.kts@gmail.com",
+        address: "Tân Phú, thành phố Hồ Chí Minh",
+
+        // Gắn đường dẫn ảnh chân dung KTS tại đây (VD: "images/chan-dung.jpg")
+        portraitImage: "",
+
+        homeBio: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.",
+        aboutTitle: "Tiêu đề",
+        aboutParagraphs: [
+          "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.",
+          "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung."
+        ],
+        expertiseBlocks: [
+          { code: "01", title: "Tiêu đề", description: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+          { code: "02", title: "Tiêu đề", description: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+          { code: "03", title: "Tiêu đề", description: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." }
+        ]
+      },
+
+      projects: [
+        {
+          id: "project-1",
+          index: "01",
+          code: "PRJ-01",
+          title: "Tên công trình",
+          subtitle: "Tiêu đề",
+          category: "Tiêu đề",
+          summary: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.",
+          coverImage: "", // Gắn đường dẫn ảnh bìa (VD: "images/project-1-cover.jpg")
+          specs: [
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." }
+          ],
+          conceptTitle: "Tiêu đề",
+          conceptParagraphs: [
+            "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.",
+            "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung."
+          ],
+          gallery: [
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" },
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" },
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" },
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" }
+          ]
+        },
+        {
+          id: "project-2",
+          index: "02",
+          code: "PRJ-02",
+          title: "Tên công trình",
+          subtitle: "Tiêu đề",
+          category: "Tiêu đề",
+          summary: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.",
+          coverImage: "",
+          specs: [
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." }
+          ],
+          conceptTitle: "Tiêu đề",
+          conceptParagraphs: [
+            "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.",
+            "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung."
+          ],
+          gallery: [
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" },
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" },
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" },
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" }
+          ]
+        },
+        {
+          id: "project-3",
+          index: "03",
+          code: "PRJ-03",
+          title: "Tên công trình",
+          subtitle: "Tiêu đề",
+          category: "Tiêu đề",
+          summary: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.",
+          coverImage: "",
+          specs: [
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." }
+          ],
+          conceptTitle: "Tiêu đề",
+          conceptParagraphs: [
+            "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.",
+            "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung."
+          ],
+          gallery: [
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" },
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" },
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" },
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" }
+          ]
+        },
+        {
+          id: "project-4",
+          index: "04",
+          code: "PRJ-04",
+          title: "Tên công trình",
+          subtitle: "Tiêu đề",
+          category: "Tiêu đề",
+          summary: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.",
+          coverImage: "",
+          specs: [
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." }
+          ],
+          conceptTitle: "Tiêu đề",
+          conceptParagraphs: [
+            "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.",
+            "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung."
+          ],
+          gallery: [
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" },
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" },
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" },
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" }
+          ]
+        },
+        {
+          id: "project-5",
+          index: "05",
+          code: "PRJ-05",
+          title: "Tên công trình",
+          subtitle: "Tiêu đề",
+          category: "Tiêu đề",
+          summary: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.",
+          coverImage: "",
+          specs: [
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." }
+          ],
+          conceptTitle: "Tiêu đề",
+          conceptParagraphs: [
+            "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.",
+            "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung."
+          ],
+          gallery: [
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" },
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" },
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" },
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" }
+          ]
+        },
+        {
+          id: "project-6",
+          index: "06",
+          code: "PRJ-06",
+          title: "Tên công trình",
+          subtitle: "Tiêu đề",
+          category: "Tiêu đề",
+          summary: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.",
+          coverImage: "",
+          specs: [
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." },
+            { label: "Tiêu đề", value: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung." }
+          ],
+          conceptTitle: "Tiêu đề",
+          conceptParagraphs: [
+            "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.",
+            "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung."
+          ],
+          gallery: [
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" },
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" },
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" },
+            { title: "Tiêu đề", caption: "Nội dung nội dung nội dung nội dung nội dung nội dung nội dung nội dung.", image: "" }
+          ]
+        }
+      ]
+    };
+  </script>
+
+  <!-- ==========================================================================
+       MODULE 03: KHỐI XỬ LÝ TƯƠNG TÁC & ĐIỀU HƯỚNG (APP ENGINE / JS)
+       ========================================================================== -->
+  <script id="app-engine-module">
+    const state = {
+      currentRoute: "home",
+      mobileDrawerOpen: false,
+      isTransitioning: false,
+      contactForm: {
+        category: "Thiết kế kiến trúc",
+        submitted: null
+      },
+      lightbox: {
+        isOpen: false,
+        projectId: null,
+        index: 0
+      }
+    };
+
+    const VALID_ROUTES = new Set([
+      "home", "about", "project-1", "project-2", "project-3", "project-4", "project-5", "project-6"
+    ]);
+
+    function escapeHTML(str) {
+      if (typeof str !== "string") return "";
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function showHudToast(message) {
+      const container = document.getElementById("hud-toast-container");
+      if (!container) return;
+      const toast = document.createElement("div");
+      toast.className = "pointer-events-auto arch-header-glass border border-cyan-400/50 text-cyan-200 px-4 py-2.5 rounded-xl shadow-xl font-mono text-xs flex items-center gap-2 transform translate-y-3 opacity-0 transition-all duration-300";
+      toast.innerHTML = `<span class="w-2 h-2 rounded-full bg-cyan-400 shrink-0"></span><span>${escapeHTML(message)}</span>`;
+      container.appendChild(toast);
+      requestAnimationFrame(() => toast.classList.remove("translate-y-3", "opacity-0"));
+      setTimeout(() => {
+        toast.classList.add("translate-y-3", "opacity-0");
+        setTimeout(() => toast.remove(), 280);
+      }, 2800);
+    }
+
+    function copyToClipboard(text, label) {
+      const temp = document.createElement("textarea");
+      temp.value = text;
+      temp.setAttribute("readonly", "");
+      temp.style.position = "absolute";
+      temp.style.left = "-9999px";
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand("copy");
+      document.body.removeChild(temp);
+      showHudToast(`Đã sao chép ${label}: ${text}`);
+    }
+
+    /* Khung bản vẽ CAD hiển thị rõ tên biến ảnh cần thay trong SITE_DATA */
+    function buildCadPlaceholderSVG(code, title, varPath, suggestedFile) {
+      return `
+        <svg viewBox="0 0 800 480" class="w-full h-full object-cover select-none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="800" height="480" fill="#040812"/>
+          <rect x="20" y="20" width="760" height="440" fill="none" stroke="rgba(34,211,238,0.25)" stroke-width="1"/>
+          <line x1="20" y1="54" x2="780" y2="54" stroke="rgba(34,211,238,0.18)"/>
+          <polygon points="160,340 400,130 640,340" fill="rgba(34,211,238,0.05)" stroke="#22d3ee" stroke-opacity="0.45" stroke-width="1.2"/>
+          <rect x="230" y="215" width="340" height="125" fill="rgba(56,189,248,0.04)" stroke="#38bdf8" stroke-opacity="0.4" stroke-dasharray="5 4"/>
+          <text x="36" y="41" fill="#22d3ee" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="1.5">${escapeHTML(code)} // CAD PLACEHOLDER</text>
+          <text x="764" y="41" text-anchor="end" fill="#94a3b8" font-family="JetBrains Mono, monospace" font-size="10">NHP // ARCH</text>
+
+          <g transform="translate(150, 194)">
+            <rect width="500" height="92" rx="10" fill="rgba(4,8,18,0.92)" stroke="#22d3ee" stroke-opacity="0.55" stroke-width="1.2"/>
+            <text x="250" y="28" text-anchor="middle" fill="#22d3ee" font-family="JetBrains Mono, monospace" font-size="11" font-weight="700">THAY ĐƯỜNG DẪN ẢNH TRONG SITE_DATA:</text>
+            <text x="250" y="51" text-anchor="middle" fill="#f8fafc" font-family="JetBrains Mono, monospace" font-size="11.5">${escapeHTML(varPath)}</text>
+            <text x="250" y="73" text-anchor="middle" fill="#38bdf8" font-family="JetBrains Mono, monospace" font-size="10.5">Gợi ý: "${escapeHTML(suggestedFile)}"</text>
+          </g>
+
+          <text x="36" y="444" fill="#cbd5e1" font-family="JetBrains Mono, monospace" font-size="11">${escapeHTML(title)}</text>
+        </svg>
+      `;
+    }
+
+    function renderMediaBox(imageSrc, altText, code, title, varPath, suggestedFile, extraClass = "") {
+      const placeholder = buildCadPlaceholderSVG(code, title, varPath, suggestedFile);
+      if (!imageSrc) {
+        return `<div class="w-full h-full ${extraClass}">${placeholder}</div>`;
+      }
+      return `
+        <img src="${escapeHTML(imageSrc)}" alt="${escapeHTML(altText)}"
+             class="w-full h-full object-cover ${extraClass}"
+             onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" />
+        <div class="hidden w-full h-full">${placeholder}</div>
+      `;
+    }
+
+    /* ==========================================================================
+       ĐIỀU HƯỚNG 8 TRANG ĐỘC LẬP QUA URL HASH + MÀN TRẬP KIẾN TRÚC
+       ========================================================================== */
+    function getRouteTitle(route) {
+      if (route === "home") return "01 // TRANG CHỦ";
+      if (route === "about") return "03 // HỒ SƠ KIẾN TRÚC SƯ";
+      const proj = SITE_DATA.projects.find(p => p.id === route);
+      return proj ? `${proj.code} // ${proj.title}` : "NHP // ARCH";
+    }
+
+    function navigateTo(route, sectionId = null) {
+      const targetRoute = VALID_ROUTES.has(route) ? route : "home";
+      if (state.isTransitioning) return;
+
+      if (targetRoute === state.currentRoute && window.location.hash === `#${targetRoute}`) {
+        if (sectionId) {
+          document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+        return;
+      }
+
+      state.isTransitioning = true;
+      const shutter = document.getElementById("shutter-transition");
+      document.getElementById("shutter-route-label").textContent = getRouteTitle(targetRoute);
+      shutter.classList.remove("is-opening");
+      shutter.classList.add("is-closing");
+
+      setTimeout(() => {
+        state.currentRoute = targetRoute;
+        if (window.location.hash !== `#${targetRoute}`) {
+          history.pushState(null, "", `#${targetRoute}`);
+        }
+        renderCurrentPage();
+
+        if (sectionId) {
+          document.getElementById(sectionId)?.scrollIntoView({ behavior: "auto" });
+        } else {
+          window.scrollTo({ top: 0, behavior: "auto" });
+        }
+
+        shutter.classList.remove("is-closing");
+        shutter.classList.add("is-opening");
+        setTimeout(() => {
+          shutter.classList.remove("is-opening");
+          state.isTransitioning = false;
+        }, 360);
+      }, 360);
+    }
+
+    function goToHomeSection(sectionId) {
+      if (state.currentRoute === "home") {
+        document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth" });
+      } else {
+        navigateTo("home", sectionId);
+      }
+    }
+
+    function syncNavigationState() {
+      const navKey = state.currentRoute.startsWith("project-") ? "projects" : state.currentRoute;
+      const indicator = document.getElementById("nav-active-indicator");
+      let activeBtn = null;
+
+      document.querySelectorAll(".nav-link").forEach(btn => {
+        const match = btn.getAttribute("data-nav") === navKey;
+        btn.classList.toggle("text-cyan-300", match);
+        btn.classList.toggle("font-semibold", match);
+        btn.classList.toggle("text-slate-300", !match);
+        if (match) activeBtn = btn;
+      });
+
+      if (indicator && activeBtn && window.innerWidth >= 768) {
+        indicator.style.width = `${activeBtn.offsetWidth}px`;
+        indicator.style.transform = `translate3d(${activeBtn.offsetLeft}px, 0, 0)`;
+        indicator.classList.remove("opacity-0");
+      } else if (indicator) {
+        indicator.classList.add("opacity-0");
+      }
+    }
+
+    /* ==========================================================================
+       TRANG 01: #home (HERO 3D TINH GỌN + LƯỚI 06 CÔNG TRÌNH + LIÊN HỆ GỌN + FORM)
+       ========================================================================== */
+    function renderHomePage() {
+      const a = SITE_DATA.architect;
+
+      return `
+        <!-- 1. HERO TINH GỌN & MÔ HÌNH KHUNG DÂY 3D TƯƠNG TÁC -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12 md:pt-10 md:pb-14">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            <div class="lg:col-span-7 space-y-5 reveal-on-scroll">
+              <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-cyan-400/35 bg-cyan-400/10 font-mono text-xs text-cyan-300 tracking-wider">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+                <span>NHP // ARCHITECTURAL PORTFOLIO</span>
+              </div>
+
+              <h1 class="font-display fluid-hero-title font-bold tracking-tight text-white">
+                ${escapeHTML(a.fullName)}
+                <span class="block mt-2 text-lg sm:text-2xl font-mono font-normal text-cyan-400 tracking-[0.16em] uppercase">
+                  ${escapeHTML(a.roleTitle)}
+                </span>
+              </h1>
+
+              <div class="font-mono text-xs sm:text-sm text-sky-300 border-l-2 border-cyan-400 pl-3.5">
+                ${escapeHTML(a.address)}
+              </div>
+
+              <p class="text-slate-300 fluid-body-text max-w-2xl">
+                ${escapeHTML(a.homeBio)}
+              </p>
+
+              <div class="flex flex-wrap items-center gap-3 pt-1">
+                <button onclick="goToHomeSection('home-projects')" data-cursor="CÔNG TRÌNH"
+                        class="btn-shine min-h-[46px] px-5 py-3 rounded-xl bg-cyan-400 text-midnight-950 font-semibold text-sm hover:bg-cyan-300 shadow-[0_0_20px_rgba(34,211,238,0.3)] flex items-center gap-2">
+                  <span>Xem 06 Công trình</span>
+                  <span>↓</span>
+                </button>
+                <button onclick="navigateTo('about')" data-cursor="HỒ SƠ KTS"
+                        class="btn-shine min-h-[46px] px-5 py-3 rounded-xl arch-glass text-slate-100 hover:border-cyan-400 hover:text-cyan-300 font-mono text-xs tracking-wider uppercase">
+                  Hồ sơ KTS
+                </button>
+                <button onclick="goToHomeSection('home-contact')" data-cursor="LIÊN HỆ"
+                        class="btn-shine min-h-[46px] px-5 py-3 rounded-xl arch-glass text-slate-100 hover:border-cyan-400 hover:text-cyan-300 font-mono text-xs tracking-wider uppercase">
+                  Liên hệ
+                </button>
+              </div>
+            </div>
+
+            <!-- Mô hình khung dây 3D xoay tương tác -->
+            <div class="lg:col-span-5 reveal-on-scroll">
+              <div class="cad-frame rounded-2xl p-4 overflow-hidden">
+                <span class="cad-corner cad-tl"></span><span class="cad-corner cad-tr"></span>
+                <span class="cad-corner cad-bl"></span><span class="cad-corner cad-br"></span>
+                <div class="laser-scanline"></div>
+
+                <div class="flex items-center justify-between mb-2.5 px-2.5 py-1.5 rounded-lg bg-midnight-950/90 border border-sky-400/20 font-mono text-[10px] text-slate-400">
+                  <span>3D WIREFRAME // <span id="hud-rot-angles" class="text-cyan-300">+16° / +31°</span></span>
+                  <span class="text-cyan-400">AXIS X-Y-Z</span>
+                </div>
+
+                <div id="hero-3d-wrapper" data-cursor="XOAY MÔ HÌNH" style="touch-action: pan-y;"
+                     class="relative w-full h-[250px] sm:h-[310px] rounded-xl bg-midnight-950 border border-cyan-400/20 overflow-hidden">
+                  <canvas id="hero-3d-canvas" class="w-full h-full block"></canvas>
+                  <div class="absolute bottom-2.5 left-3 right-3 flex justify-between font-mono text-[10px] text-slate-500 pointer-events-none">
+                    <span>[PC: RÊ CHUỘT • MOBILE: VUỐT NGANG]</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. LƯỚI 06 CÔNG TRÌNH TIÊU BIỂU (#project-1 ĐẾN #project-6) -->
+        <section id="home-projects" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-sky-400/15">
+          <div class="mb-8 reveal-on-scroll">
+            <div class="font-mono text-xs text-cyan-400 tracking-[0.2em] uppercase mb-1.5">02 // DANH MỤC CÔNG TRÌNH [06]</div>
+            <h2 class="font-display fluid-section-title font-bold text-white">Các Công Trình Đã Thiết Kế</h2>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            ${SITE_DATA.projects.map((proj, idx) => `
+              <article onclick="navigateTo('${proj.id}')" data-cursor="XEM CÔNG TRÌNH"
+                       class="tilt-card btn-shine cad-frame rounded-2xl overflow-hidden flex flex-col justify-between group cursor-pointer reveal-on-scroll">
+                <div class="tilt-glow"></div>
+                <span class="cad-corner cad-tl"></span><span class="cad-corner cad-tr"></span>
+                <span class="cad-corner cad-bl"></span><span class="cad-corner cad-br"></span>
+
+                <div>
+                  <div class="relative aspect-[16/10] bg-midnight-950 overflow-hidden border-b border-cyan-400/20">
+                    ${renderMediaBox(
+                      proj.coverImage,
+                      proj.title,
+                      proj.code,
+                      proj.title,
+                      `SITE_DATA.projects[${idx}].coverImage`,
+                      `images/project-${idx + 1}-cover.jpg`,
+                      "group-hover:scale-105 transition-transform duration-500"
+                    )}
+                    <div class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-midnight-950/90 border border-cyan-400/40 font-mono text-[11px] text-cyan-300 font-semibold">
+                      ${escapeHTML(proj.code)}
+                    </div>
+                    <div class="absolute top-3 right-3 px-2.5 py-1 rounded-md bg-midnight-950/90 border border-slate-700 font-mono text-[11px] text-slate-300">
+                      ${escapeHTML(proj.category)}
+                    </div>
+                  </div>
+
+                  <div class="p-5">
+                    <h3 class="font-display fluid-card-title font-bold text-white group-hover:text-cyan-300 transition-colors">
+                      ${escapeHTML(proj.title)}
+                    </h3>
+                    <div class="text-sm font-medium text-sky-300 mt-1">${escapeHTML(proj.subtitle)}</div>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-2.5 leading-relaxed">${escapeHTML(proj.summary)}</p>
+                  </div>
+                </div>
+
+                <div class="px-5 py-3.5 border-t border-slate-800/90 bg-midnight-950/60 flex items-center justify-between font-mono text-xs">
+                  <span class="text-slate-400">#${escapeHTML(proj.id)}</span>
+                  <span class="text-cyan-400 font-semibold group-hover:translate-x-1 transition-transform">Chi tiết →</span>
+                </div>
+              </article>
+            `).join("")}
+          </div>
+        </section>
+
+        <!-- 3. THÔNG TIN LIÊN HỆ NHỎ GỌN (3 THẺ) & FORM LIÊN HỆ -->
+        <section id="home-contact" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-sky-400/15">
+          <div class="mb-7 reveal-on-scroll">
+            <div class="font-mono text-xs text-cyan-400 tracking-[0.2em] uppercase mb-1.5">04 // KẾT NỐI TRỰC TIẾP</div>
+            <h2 class="font-display fluid-section-title font-bold text-white">Thông Tin Liên Hệ</h2>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start reveal-on-scroll">
+            <!-- 3 Thẻ thông tin liên hệ thu gọn -->
+            <div class="lg:col-span-5 space-y-3">
+              <!-- Điện thoại -->
+              <div class="arch-glass rounded-xl px-4 py-3 flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                  <div class="font-mono text-[10px] text-slate-400 uppercase">Điện thoại</div>
+                  <a href="tel:${escapeHTML(a.phoneHref)}" class="block font-mono text-sm font-semibold text-white hover:text-cyan-300 truncate">
+                    ${escapeHTML(a.phone)}
+                  </a>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <a href="tel:${escapeHTML(a.phoneHref)}" data-cursor="GỌI"
+                     class="btn-shine h-9 px-2.5 rounded-lg bg-cyan-400 text-midnight-950 font-mono text-[11px] font-bold hover:bg-cyan-300 inline-flex items-center">
+                    Gọi
+                  </a>
+                  <button onclick="copyToClipboard('${escapeHTML(a.phone)}', 'Số điện thoại')" data-cursor="SAO CHÉP"
+                          class="btn-shine h-9 px-2.5 rounded-lg border border-cyan-400/35 bg-cyan-400/10 text-cyan-300 hover:bg-cyan-400 hover:text-midnight-950 font-mono text-[11px]">
+                    Sao chép
+                  </button>
+                </div>
+              </div>
+
+              <!-- Email -->
+              <div class="arch-glass rounded-xl px-4 py-3 flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                  <div class="font-mono text-[10px] text-slate-400 uppercase">Email</div>
+                  <a href="mailto:${escapeHTML(a.email)}" class="block font-mono text-xs sm:text-sm font-semibold text-white hover:text-cyan-300 truncate">
+                    ${escapeHTML(a.email)}
+                  </a>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                  <a href="mailto:${escapeHTML(a.email)}" data-cursor="MAIL"
+                     class="btn-shine h-9 px-2.5 rounded-lg bg-cyan-400 text-midnight-950 font-mono text-[11px] font-bold hover:bg-cyan-300 inline-flex items-center">
+                    Mail
+                  </a>
+                  <button onclick="copyToClipboard('${escapeHTML(a.email)}', 'Email')" data-cursor="SAO CHÉP"
+                          class="btn-shine h-9 px-2.5 rounded-lg border border-cyan-400/35 bg-cyan-400/10 text-cyan-300 hover:bg-cyan-400 hover:text-midnight-950 font-mono text-[11px]">
+                    Sao chép
+                  </button>
+                </div>
+              </div>
+
+              <!-- Địa chỉ liên lạc -->
+              <div class="arch-glass rounded-xl px-4 py-3 flex items-center justify-between gap-3">
+                <div class="min-w-0">
+                  <div class="font-mono text-[10px] text-slate-400 uppercase">Địa chỉ liên lạc</div>
+                  <div class="text-sm font-medium text-white truncate">${escapeHTML(a.address)}</div>
+                </div>
+                <span class="px-2.5 py-1 rounded-md border border-sky-400/25 bg-midnight-950/90 font-mono text-[10px] text-cyan-300 shrink-0">
+                  TP.HCM
+                </span>
+              </div>
+            </div>
+
+            <!-- Form liên hệ tương tác -->
+            <div class="lg:col-span-7">
+              <div id="contact-form-panel" class="cad-frame rounded-2xl p-5 sm:p-6">
+                <span class="cad-corner cad-tl"></span><span class="cad-corner cad-tr"></span>
+                <span class="cad-corner cad-bl"></span><span class="cad-corner cad-br"></span>
+                ${renderContactFormInner()}
+              </div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    function renderContactFormInner() {
+      const sub = state.contactForm.submitted;
+      const a = SITE_DATA.architect;
+
+      if (sub) {
+        const subject = encodeURIComponent(`[Portfolio NHP] ${sub.category} — ${sub.name}`);
+        const body = encodeURIComponent(
+          `Họ và tên: ${sub.name}\nLiên hệ: ${sub.contact}\nHạng mục: ${sub.category}\n\nNội dung:\n${sub.message}`
+        );
+        return `
+          <div class="space-y-4">
+            <div class="font-mono text-xs text-cyan-400 border-b border-cyan-400/20 pb-2.5">
+              // ĐÃ GHI NHẬN THÔNG TIN TRAO ĐỔI
+            </div>
+            <div class="p-4 rounded-xl bg-midnight-950/90 border border-cyan-400/30 space-y-1.5 text-xs sm:text-sm">
+              <div class="font-semibold text-white">Cảm ơn ${escapeHTML(sub.name)} đã gửi thông tin.</div>
+              <div class="font-mono text-xs text-slate-300">Liên hệ: ${escapeHTML(sub.contact)} • Hạng mục: <span class="text-cyan-300">${escapeHTML(sub.category)}</span></div>
+              ${sub.message ? `<p class="text-slate-400 pt-1">${escapeHTML(sub.message)}</p>` : ""}
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <a href="mailto:${escapeHTML(a.email)}?subject=${subject}&body=${body}" data-cursor="GỬI EMAIL"
+                 class="btn-shine min-h-[44px] px-4 py-2.5 rounded-xl bg-cyan-400 text-midnight-950 font-mono text-xs font-bold hover:bg-cyan-300 inline-flex items-center">
+                Mở ứng dụng Email điền sẵn nội dung →
+              </a>
+              <button type="button" onclick="resetContactForm()" data-cursor="GỬI LẠI"
+                      class="btn-shine min-h-[44px] px-4 py-2.5 rounded-xl border border-slate-700 bg-midnight-900 text-slate-200 hover:border-cyan-400 font-mono text-xs">
+                Gửi tin nhắn mới
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      return `
+        <form onsubmit="handleContactSubmit(event)" novalidate class="space-y-3.5">
+          <div class="font-mono text-[11px] text-cyan-400 uppercase tracking-wider border-b border-sky-400/15 pb-2">
+            // GỬI TIN NHẮN TRAO ĐỔI
+          </div>
+
+          <div id="cf-error" class="hidden px-3 py-2 rounded-lg border border-rose-400/45 bg-rose-950/40 font-mono text-xs text-rose-200"></div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div>
+              <label for="cf-name" class="block font-mono text-[11px] text-slate-300 mb-1">Họ và tên <span class="text-cyan-400">*</span></label>
+              <input id="cf-name" type="text" required placeholder="Nhập họ và tên..." class="hud-input w-full h-11 px-3.5 rounded-xl text-sm" />
+            </div>
+            <div>
+              <label for="cf-contact" class="block font-mono text-[11px] text-slate-300 mb-1">Email hoặc Số điện thoại <span class="text-cyan-400">*</span></label>
+              <input id="cf-contact" type="text" required placeholder="Email hoặc SĐT..." class="hud-input w-full h-11 px-3.5 rounded-xl text-sm" />
+            </div>
+          </div>
+
+          <div>
+            <label for="cf-category" class="block font-mono text-[11px] text-slate-300 mb-1">Hạng mục quan tâm</label>
+            <select id="cf-category" class="hud-input w-full h-11 px-3.5 rounded-xl text-sm">
+              <option value="Thiết kế kiến trúc">Thiết kế kiến trúc</option>
+              <option value="Thiết kế nội thất">Thiết kế nội thất</option>
+              <option value="Cải tạo công trình">Cải tạo công trình</option>
+              <option value="Trao đổi khác">Trao đổi khác</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="cf-message" class="block font-mono text-[11px] text-slate-300 mb-1">Nội dung trao đổi</label>
+            <textarea id="cf-message" rows="3" placeholder="Nhập nội dung cần trao đổi..." class="hud-input w-full p-3.5 rounded-xl text-sm resize-y"></textarea>
+          </div>
+
+          <button type="submit" data-cursor="GỬI"
+                  class="btn-shine min-h-[44px] px-6 py-2.5 rounded-xl bg-cyan-400 text-midnight-950 font-mono text-xs font-bold tracking-wider uppercase hover:bg-cyan-300 shadow-[0_0_18px_rgba(34,211,238,0.28)]">
+            Gửi tin nhắn →
+          </button>
+        </form>
+      `;
+    }
+
+    function handleContactSubmit(e) {
+      e.preventDefault();
+      const name = (document.getElementById("cf-name")?.value || "").trim();
+      const contact = (document.getElementById("cf-contact")?.value || "").trim();
+      const category = document.getElementById("cf-category")?.value || "Thiết kế kiến trúc";
+      const message = (document.getElementById("cf-message")?.value || "").trim();
+      const errEl = document.getElementById("cf-error");
+
+      if (!name || !contact) {
+        if (errEl) {
+          errEl.textContent = "Vui lòng nhập đầy đủ Họ và tên cùng Email hoặc Số điện thoại.";
+          errEl.classList.remove("hidden");
+        }
+        return;
+      }
+
+      state.contactForm.submitted = { name, contact, category, message };
+      const panel = document.getElementById("contact-form-panel");
+      if (panel) {
+        panel.innerHTML = `
+          <span class="cad-corner cad-tl"></span><span class="cad-corner cad-tr"></span>
+          <span class="cad-corner cad-bl"></span><span class="cad-corner cad-br"></span>
+          ${renderContactFormInner()}
+        `;
+      }
+      showHudToast("Đã ghi nhận thông tin liên hệ.");
+    }
+
+    function resetContactForm() {
+      state.contactForm.submitted = null;
+      const panel = document.getElementById("contact-form-panel");
+      if (panel) {
+        panel.innerHTML = `
+          <span class="cad-corner cad-tl"></span><span class="cad-corner cad-tr"></span>
+          <span class="cad-corner cad-bl"></span><span class="cad-corner cad-br"></span>
+          ${renderContactFormInner()}
+        `;
+      }
+    }
+
+    /* ==========================================================================
+       TRANG 02: #about (HỒ SƠ KIẾN TRÚC SƯ — HIỂN THỊ DUY NHẤT 1 LẦN CỤM TỐT NGHIỆP)
+       ========================================================================== */
+    function renderAboutPage() {
+      const a = SITE_DATA.architect;
+
+      return `
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-16">
+          <div class="flex flex-wrap items-center justify-between gap-4 pb-5 mb-8 border-b border-sky-400/20 reveal-on-scroll">
+            <div class="font-mono text-xs text-cyan-400 tracking-[0.2em] uppercase">03 // HỒ SƠ KIẾN TRÚC SƯ</div>
+            <button onclick="navigateTo('home')" data-cursor="TRANG CHỦ"
+                    class="btn-shine min-h-[44px] px-4 py-2 rounded-xl arch-glass font-mono text-xs text-cyan-300 hover:border-cyan-400">
+              ← Trang chủ
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <!-- Khung ảnh chân dung KTS -->
+            <div class="lg:col-span-5 reveal-on-scroll">
+              <div class="cad-frame rounded-2xl p-4">
+                <span class="cad-corner cad-tl"></span><span class="cad-corner cad-tr"></span>
+                <span class="cad-corner cad-bl"></span><span class="cad-corner cad-br"></span>
+                <div class="laser-scanline"></div>
+
+                <div class="relative aspect-[4/5] rounded-xl overflow-hidden bg-midnight-950 border border-cyan-400/25">
+                  ${renderMediaBox(
+                    a.portraitImage,
+                    a.fullName,
+                    "NHP // PORTRAIT",
+                    a.fullName,
+                    "SITE_DATA.architect.portraitImage",
+                    "images/chan-dung.jpg"
+                  )}
+                </div>
+
+                <div class="mt-4 p-4 rounded-xl bg-midnight-950/90 border border-slate-800 font-mono text-xs text-slate-300 space-y-1.5">
+                  <div class="font-display text-base font-bold text-white">${escapeHTML(a.fullName)}</div>
+                  <div class="text-cyan-400">${escapeHTML(a.roleTitle)}</div>
+                  <div>Địa chỉ: ${escapeHTML(a.address)}</div>
+                  <div>SĐT: <a href="tel:${escapeHTML(a.phoneHref)}" class="text-cyan-300 hover:underline">${escapeHTML(a.phone)}</a></div>
+                  <div>Email: <a href="mailto:${escapeHTML(a.email)}" class="text-cyan-300 hover:underline break-all">${escapeHTML(a.email)}</a></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Thông tin học vấn (duy nhất 1 lần) & các khối nội dung -->
+            <div class="lg:col-span-7 space-y-6 reveal-on-scroll">
+              <div>
+                <div class="inline-flex items-center px-3.5 py-1.5 rounded-full bg-cyan-400/15 border border-cyan-400/40 font-mono text-xs text-cyan-300 mb-3">
+                  <span>${escapeHTML(a.graduation)}</span>
+                </div>
+                <h1 class="font-display fluid-page-title font-bold text-white">
+                  ${escapeHTML(a.aboutTitle)}
+                </h1>
+              </div>
+
+              <div class="space-y-4 text-slate-300 fluid-body-text">
+                ${a.aboutParagraphs.map(p => `<p>${escapeHTML(p)}</p>`).join("")}
+              </div>
+
+              <div class="cad-frame rounded-2xl p-6 space-y-4">
+                <span class="cad-corner cad-tl"></span><span class="cad-corner cad-tr"></span>
+                <span class="cad-corner cad-bl"></span><span class="cad-corner cad-br"></span>
+                <div class="font-mono text-xs text-cyan-400 uppercase tracking-widest">// CHUYÊN MÔN</div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  ${a.expertiseBlocks.map(b => `
+                    <div class="p-4 rounded-xl bg-midnight-950/80 border border-slate-800">
+                      <div class="font-mono text-xs text-cyan-400 mb-1.5">${escapeHTML(b.code)} // ${escapeHTML(b.title)}</div>
+                      <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">${escapeHTML(b.description)}</p>
+                    </div>
+                  `).join("")}
+                </div>
+              </div>
+
+              <div class="flex flex-wrap gap-3 pt-1">
+                <button onclick="goToHomeSection('home-projects')" data-cursor="CÔNG TRÌNH"
+                        class="btn-shine min-h-[46px] px-5 py-3 rounded-xl bg-cyan-400 text-midnight-950 font-semibold text-sm hover:bg-cyan-300">
+                  Xem 06 Công trình →
+                </button>
+                <button onclick="goToHomeSection('home-contact')" data-cursor="LIÊN HỆ"
+                        class="btn-shine min-h-[46px] px-5 py-3 rounded-xl arch-glass text-slate-100 hover:border-cyan-400 font-mono text-xs uppercase">
+                  Liên hệ
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+      `;
+    }
+
+    /* ==========================================================================
+       TRANG 03..08: #project-1 ĐẾN #project-6 (6 TRANG CÔNG TRÌNH ĐỘC LẬP)
+       ========================================================================== */
+    function renderSingleProjectPage(project) {
+      const idx = SITE_DATA.projects.findIndex(p => p.id === project.id);
+      const prevProj = SITE_DATA.projects[(idx - 1 + SITE_DATA.projects.length) % SITE_DATA.projects.length];
+      const nextProj = SITE_DATA.projects[(idx + 1) % SITE_DATA.projects.length];
+
+      return `
+        <article class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-16">
+          <!-- Thanh quay lại & chuyển nhanh 01..06 -->
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 mb-8 border-b border-sky-400/20 reveal-on-scroll">
+            <div class="flex items-center gap-3">
+              <button onclick="goToHomeSection('home-projects')" data-cursor="QUAY LẠI"
+                      class="btn-shine min-h-[44px] px-4 py-2 rounded-xl arch-glass font-mono text-xs text-cyan-300 hover:border-cyan-400">
+                ← Danh sách công trình
+              </button>
+              <span class="font-mono text-xs text-cyan-400 font-semibold">${escapeHTML(project.code)}</span>
+            </div>
+
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1">
+              ${SITE_DATA.projects.map(item => `
+                <button onclick="navigateTo('${item.id}')" data-cursor="${escapeHTML(item.code)}"
+                        class="btn-shine min-w-[44px] h-11 px-3 rounded-xl font-mono text-xs shrink-0 ${
+                          item.id === project.id
+                            ? "bg-cyan-400 text-midnight-950 font-bold"
+                            : "bg-midnight-800 border border-slate-700 text-slate-300 hover:border-cyan-400"
+                        }">
+                  ${item.index}
+                </button>
+              `).join("")}
+            </div>
+          </div>
+
+          <!-- Tiêu đề & Ảnh bìa lớn -->
+          <header class="space-y-6 mb-10 reveal-on-scroll">
+            <div>
+              <div class="font-mono text-xs text-cyan-400 mb-2">${escapeHTML(project.code)} // ${escapeHTML(project.category)}</div>
+              <h1 class="font-display fluid-page-title font-bold text-white">${escapeHTML(project.title)}</h1>
+              <p class="text-lg sm:text-xl text-cyan-300 mt-1.5">${escapeHTML(project.subtitle)}</p>
+            </div>
+
+            <div class="cad-frame rounded-2xl p-3 sm:p-4 overflow-hidden">
+              <span class="cad-corner cad-tl"></span><span class="cad-corner cad-tr"></span>
+              <span class="cad-corner cad-bl"></span><span class="cad-corner cad-br"></span>
+              <div class="laser-scanline"></div>
+
+              <div class="relative aspect-[16/9] max-h-[580px] w-full rounded-xl overflow-hidden bg-midnight-950 border border-cyan-400/20">
+                ${renderMediaBox(
+                  project.coverImage,
+                  project.title,
+                  project.code,
+                  project.title,
+                  `SITE_DATA.projects[${idx}].coverImage`,
+                  `images/project-${idx + 1}-cover.jpg`
+                )}
+              </div>
+            </div>
+          </header>
+
+          <!-- Bảng thông số -->
+          <section class="mb-10 reveal-on-scroll">
+            <div class="cad-frame rounded-2xl p-6">
+              <span class="cad-corner cad-tl"></span><span class="cad-corner cad-tr"></span>
+              <span class="cad-corner cad-bl"></span><span class="cad-corner cad-br"></span>
+              <div class="font-mono text-xs text-cyan-400 uppercase tracking-widest mb-4">// THÔNG SỐ CÔNG TRÌNH</div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                ${project.specs.map(s => `
+                  <div class="p-4 rounded-xl bg-midnight-950/80 border border-slate-800">
+                    <div class="font-mono text-[10px] text-cyan-400 uppercase">${escapeHTML(s.label)}</div>
+                    <div class="text-xs sm:text-sm text-slate-200 mt-1.5 leading-relaxed">${escapeHTML(s.value)}</div>
+                  </div>
+                `).join("")}
+              </div>
+            </div>
+          </section>
+
+          <!-- Thuyết minh kiến trúc -->
+          <section class="mb-10 reveal-on-scroll">
+            <div class="cad-frame rounded-2xl p-6 sm:p-8">
+              <span class="cad-corner cad-tl"></span><span class="cad-corner cad-tr"></span>
+              <span class="cad-corner cad-bl"></span><span class="cad-corner cad-br"></span>
+              <div class="font-mono text-xs text-cyan-400 uppercase tracking-widest mb-2">// THUYẾT MINH</div>
+              <h2 class="font-display fluid-section-title font-bold text-white mb-4">${escapeHTML(project.conceptTitle)}</h2>
+              <div class="space-y-4 fluid-body-text text-slate-300 max-w-4xl">
+                ${project.conceptParagraphs.map(p => `<p>${escapeHTML(p)}</p>`).join("")}
+              </div>
+            </div>
+          </section>
+
+          <!-- Thư viện 04 ảnh mở Lightbox -->
+          <section class="mb-12 reveal-on-scroll">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-5">
+              <div>
+                <div class="font-mono text-xs text-cyan-400 uppercase tracking-widest mb-1">// THƯ VIỆN ẢNH [04]</div>
+                <h2 class="font-display fluid-section-title font-bold text-white">Hình Ảnh Công Trình</h2>
+              </div>
+              <div class="font-mono text-xs text-slate-400">Nhấn vào ảnh để phóng to Lightbox</div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              ${project.gallery.map((g, gIdx) => `
+                <div onclick="openLightbox('${project.id}', ${gIdx})" data-cursor="MỞ ẢNH"
+                     class="btn-shine cad-frame rounded-2xl overflow-hidden group cursor-pointer flex flex-col justify-between">
+                  <span class="cad-corner cad-tl"></span><span class="cad-corner cad-tr"></span>
+                  <span class="cad-corner cad-bl"></span><span class="cad-corner cad-br"></span>
+
+                  <div class="relative aspect-[16/10] bg-midnight-950 overflow-hidden border-b border-cyan-400/20">
+                    ${renderMediaBox(
+                      g.image,
+                      g.title,
+                      `${project.code} // 0${gIdx + 1}`,
+                      g.title,
+                      `SITE_DATA.projects[${idx}].gallery[${gIdx}].image`,
+                      `images/project-${idx + 1}-view-${gIdx + 1}.jpg`,
+                      "group-hover:scale-105 transition-transform duration-500"
+                    )}
+                    <div class="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-midnight-950/90 border border-cyan-400/35 font-mono text-[10px] text-cyan-300">
+                      VIEW 0${gIdx + 1}
+                    </div>
+                  </div>
+
+                  <div class="p-4 sm:p-5">
+                    <h3 class="font-display text-base font-bold text-white group-hover:text-cyan-300 transition-colors">${escapeHTML(g.title)}</h3>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1">${escapeHTML(g.caption)}</p>
+                  </div>
+                </div>
+              `).join("")}
+            </div>
+          </section>
+
+          <!-- Điều hướng Công trình trước / sau -->
+          <nav class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-8 border-t border-sky-400/20 reveal-on-scroll" aria-label="Chuyển công trình">
+            <button onclick="navigateTo('${prevProj.id}')" data-cursor="TRƯỚC"
+                    class="btn-shine cad-frame rounded-2xl p-5 text-left group hover:border-cyan-400">
+              <span class="cad-corner cad-tl"></span><span class="cad-corner cad-tr"></span>
+              <span class="cad-corner cad-bl"></span><span class="cad-corner cad-br"></span>
+              <div class="font-mono text-xs text-cyan-400 mb-1">← CÔNG TRÌNH TRƯỚC [${escapeHTML(prevProj.code)}]</div>
+              <div class="font-display text-lg font-bold text-white group-hover:text-cyan-300">${escapeHTML(prevProj.title)}</div>
+            </button>
+
+            <button onclick="navigateTo('${nextProj.id}')" data-cursor="TIẾP THEO"
+                    class="btn-shine cad-frame rounded-2xl p-5 text-right group hover:border-cyan-400">
+              <span class="cad-corner cad-tl"></span><span class="cad-corner cad-tr"></span>
+              <span class="cad-corner cad-bl"></span><span class="cad-corner cad-br"></span>
+              <div class="font-mono text-xs text-cyan-400 mb-1">CÔNG TRÌNH TIẾP THEO [${escapeHTML(nextProj.code)}] →</div>
+              <div class="font-display text-lg font-bold text-white group-hover:text-cyan-300">${escapeHTML(nextProj.title)}</div>
+            </button>
+          </nav>
+        </article>
+      `;
+    }
+
+    function renderCurrentPage() {
+      const viewport = document.getElementById("page-viewport");
+      const route = state.currentRoute;
+
+      if (route === "about") {
+        viewport.innerHTML = renderAboutPage();
+      } else if (route.startsWith("project-")) {
+        const proj = SITE_DATA.projects.find(p => p.id === route) || SITE_DATA.projects[0];
+        viewport.innerHTML = renderSingleProjectPage(proj);
+      } else {
+        state.currentRoute = "home";
+        viewport.innerHTML = renderHomePage();
+        initHero3DWireframe();
+      }
+
+      syncNavigationState();
+      initScrollRevealObserver();
+      bindTiltCards();
+      updateLaserScrollProgress();
+    }
+
+    /* ==========================================================================
+       NGĂN KÉO ĐIỀU HƯỚNG MOBILE & LIGHTBOX PHÓNG TO ẢNH
+       ========================================================================== */
+    function toggleMobileDrawer(forceOpen) {
+      const drawer = document.getElementById("mobile-nav-drawer");
+      const btn = document.getElementById("mobile-drawer-toggle");
+      const next = typeof forceOpen === "boolean" ? forceOpen : !state.mobileDrawerOpen;
+      state.mobileDrawerOpen = next;
+
+      drawer.classList.toggle("translate-x-full", !next);
+      drawer.classList.toggle("translate-x-0", next);
+      btn.classList.toggle("is-open", next);
+      btn.setAttribute("aria-expanded", String(next));
+      document.body.style.overflow = next ? "hidden" : "";
+    }
+
+    function populateMobileProjects() {
+      const box = document.getElementById("mobile-projects-quicklist");
+      if (!box) return;
+      box.innerHTML = SITE_DATA.projects.map(p => `
+        <button onclick="navigateTo('${p.id}'); toggleMobileDrawer(false);"
+                class="btn-shine w-full min-h-[46px] px-4 py-2.5 rounded-xl border border-slate-800 bg-midnight-900/80 text-left font-mono text-xs text-slate-300 hover:border-cyan-400 flex items-center justify-between">
+          <span>${escapeHTML(p.code)} — ${escapeHTML(p.title)}</span><span class="text-cyan-400">→</span>
+        </button>
+      `).join("");
+    }
+
+    function openLightbox(projectId, index) {
+      state.lightbox = { isOpen: true, projectId, index };
+      document.getElementById("lightbox-modal").classList.remove("hidden");
+      document.body.style.overflow = "hidden";
+      renderLightboxStage();
+    }
+
+    function closeLightbox() {
+      state.lightbox.isOpen = false;
+      document.getElementById("lightbox-modal").classList.add("hidden");
+      document.body.style.overflow = state.mobileDrawerOpen ? "hidden" : "";
+    }
+
+    function stepLightbox(dir) {
+      const proj = SITE_DATA.projects.find(p => p.id === state.lightbox.projectId);
+      if (!proj) return;
+      const total = proj.gallery.length;
+      state.lightbox.index = (state.lightbox.index + dir + total) % total;
+      renderLightboxStage();
+    }
+
+    function renderLightboxStage() {
+      const { projectId, index } = state.lightbox;
+      const pIdx = SITE_DATA.projects.findIndex(p => p.id === projectId);
+      const proj = SITE_DATA.projects[pIdx];
+      if (!proj) return;
+      const item = proj.gallery[index];
+
+      document.getElementById("lb-counter").textContent = `0${index + 1} / 0${proj.gallery.length}`;
+      document.getElementById("lb-title").textContent = `${proj.code} — ${item.title}`;
+      document.getElementById("lb-caption").textContent = item.caption;
+
+      const stage = document.getElementById("lb-stage");
+      const fallback = buildCadPlaceholderSVG(
+        `${proj.code} // 0${index + 1}`,
+        item.title,
+        `SITE_DATA.projects[${pIdx}].gallery[${index}].image`,
+        `images/project-${pIdx + 1}-view-${index + 1}.jpg`
+      );
+      stage.innerHTML = item.image
+        ? `<img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.title)}" class="max-h-[70vh] w-auto object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');" /><div class="hidden w-full aspect-[16/10]">${fallback}</div>`
+        : `<div class="w-full aspect-[16/10]">${fallback}</div>`;
+    }
+
+    /* ==========================================================================
+       HIỆU ỨNG ĐỘNG TƯƠNG TÁC (SCROLL LASER, CON TRỎ PC, TILT 3D, SCROLL REVEAL)
+       ========================================================================== */
+    function updateLaserScrollProgress() {
+      const bar = document.getElementById("laser-scroll-progress");
+      if (!bar) return;
+      const top = window.scrollY || document.documentElement.scrollTop;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = `${max > 0 ? Math.min(100, (top / max) * 100).toFixed(2) : 0}%`;
+    }
+
+    function initScrollRevealObserver() {
+      const targets = document.querySelectorAll(".reveal-on-scroll");
+      if (!("IntersectionObserver" in window)) {
+        targets.forEach(el => el.classList.add("is-visible"));
+        return;
+      }
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.08 });
+      targets.forEach(el => observer.observe(el));
+    }
+
+    function bindTiltCards() {
+      if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+      document.querySelectorAll(".tilt-card").forEach(card => {
+        if (card.dataset.tiltReady) return;
+        card.dataset.tiltReady = "1";
+        card.addEventListener("mousemove", e => {
+          const r = card.getBoundingClientRect();
+          const x = e.clientX - r.left;
+          const y = e.clientY - r.top;
+          card.style.setProperty("--gx", `${x}px`);
+          card.style.setProperty("--gy", `${y}px`);
+          card.style.transform = `perspective(1000px) rotateX(${((y / r.height) - 0.5) * -6}deg) rotateY(${((x / r.width) - 0.5) * 6}deg) translateY(-4px)`;
+        });
+        card.addEventListener("mouseleave", () => {
+          card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)";
+        });
+      });
+    }
+
+    function initDesktopCustomCursor() {
+      const cursor = document.getElementById("cad-cursor");
+      const dot = document.getElementById("cad-cursor-dot");
+      const tag = document.getElementById("cad-cursor-tag");
+      if (!cursor || !dot || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+      document.body.classList.add("pc-cursor-enabled");
+      let mx = -120, my = -120, rx = -120, ry = -120;
+
+      window.addEventListener("mousemove", e => {
+        mx = e.clientX;
+        my = e.clientY;
+        dot.style.transform = `translate3d(${mx}px, ${my}px, 0)`;
+
+        const coords = document.getElementById("hud-mouse-coords");
+        if (coords) coords.textContent = `X:${String(Math.round(mx)).padStart(4, "0")} Y:${String(Math.round(my)).padStart(4, "0")}`;
+
+        const hit = e.target.closest("[data-cursor], a, button");
+        if (hit) {
+          cursor.classList.add("is-active");
+          const label = hit.getAttribute("data-cursor");
+          if (label) { tag.textContent = label; cursor.classList.add("has-tag"); }
+          else cursor.classList.remove("has-tag");
+        } else {
+          cursor.classList.remove("is-active", "has-tag");
+        }
+      });
+
+      (function loop() {
+        rx += (mx - rx) * 0.22;
+        ry += (my - ry) * 0.22;
+        cursor.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
+        requestAnimationFrame(loop);
+      })();
+    }
+
+    /* Mô hình khung dây 3D xoay tương tác trên Hero */
+    function initHero3DWireframe() {
+      const canvas = document.getElementById("hero-3d-canvas");
+      const wrapper = document.getElementById("hero-3d-wrapper");
+      if (!canvas || !wrapper) return;
+      const ctx = canvas.getContext("2d");
+      let w = 0, h = 0;
+
+      function resize() {
+        const rect = wrapper.getBoundingClientRect();
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = rect.width;
+        h = rect.height;
+        canvas.width = Math.floor(w * dpr);
+        canvas.height = Math.floor(h * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      resize();
+      window.addEventListener("resize", resize);
+
+      const verts = [
+        [-1.3, 0.72, -0.9], [1.3, 0.72, -0.9], [1.3, 0.72, 0.9], [-1.3, 0.72, 0.9],
+        [-1.65, 0.1, -1.05], [1.75, 0.1, -1.05], [1.75, 0.1, 1.05], [-1.65, 0.1, 1.05],
+        [-1.95, -0.58, -1.2], [2.05, -0.78, -1.2], [2.05, -0.78, 1.2], [-1.95, -0.58, 1.2],
+        [-0.45, 0.72, -0.45], [0.45, 0.72, -0.45], [0.45, -0.68, -0.45], [-0.45, -0.68, -0.45]
+      ];
+      const edges = [
+        [0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[8,9],[9,10],[10,11],[11,8],
+        [0,4],[1,5],[2,6],[3,7],[4,8],[5,9],[6,10],[7,11],[8,10],[9,11],[12,13],[13,14],[14,15],[15,12]
+      ];
+
+      let ay = 0.55, ax = 0.28, tay = 0.55, tax = 0.28, touchDrag = false, lx = 0, ly = 0;
+
+      wrapper.addEventListener("mousemove", e => {
+        const r = wrapper.getBoundingClientRect();
+        tay = ((e.clientX - r.left) / r.width - 0.5) * 2.4;
+        tax = 0.28 + ((e.clientY - r.top) / r.height - 0.5) * 0.9;
+      });
+      wrapper.addEventListener("touchstart", e => {
+        if (e.touches[0]) { touchDrag = true; lx = e.touches[0].clientX; ly = e.touches[0].clientY; }
+      }, { passive: true });
+      wrapper.addEventListener("touchmove", e => {
+        if (!touchDrag || !e.touches[0]) return;
+        const dx = e.touches[0].clientX - lx;
+        const dy = e.touches[0].clientY - ly;
+        if (Math.abs(dx) >= Math.abs(dy)) {
+          tay += dx * 0.016;
+          tax = Math.max(-0.85, Math.min(0.95, tax + dy * 0.008));
+        }
+        lx = e.touches[0].clientX; ly = e.touches[0].clientY;
+      }, { passive: true });
+      wrapper.addEventListener("touchend", () => { touchDrag = false; }, { passive: true });
+
+      function project([x, y, z]) {
+        const cy = Math.cos(ay), sy = Math.sin(ay);
+        const x1 = x * cy - z * sy, z1 = z * cy + x * sy;
+        const cx = Math.cos(ax), sx = Math.sin(ax);
+        const y2 = y * cx - z1 * sx, z2 = z1 * cx + y * sx;
+        const s = Math.min(w, h) * 0.34 / (z2 + 4.3);
+        return [w / 2 + x1 * s * 2.15, h / 2 + y2 * s * 2.15];
+      }
+
+      (function animate() {
+        if (!document.getElementById("hero-3d-canvas")) return;
+        if (!touchDrag) tay += 0.004;
+        ay += (tay - ay) * 0.08;
+        ax += (tax - ax) * 0.08;
+
+        const angleEl = document.getElementById("hud-rot-angles");
+        if (angleEl) {
+          angleEl.textContent = `${((ax * 180) / Math.PI).toFixed(0)}° / ${(((ay * 180) / Math.PI) % 360).toFixed(0)}°`;
+        }
+
+        ctx.clearRect(0, 0, w, h);
+        const pts = verts.map(project);
+        edges.forEach(([a, b], i) => {
+          ctx.beginPath();
+          ctx.moveTo(pts[a][0], pts[a][1]);
+          ctx.lineTo(pts[b][0], pts[b][1]);
+          ctx.strokeStyle = i >= 8 && i <= 11 ? "#22d3ee" : "rgba(56, 189, 248, 0.55)";
+          ctx.lineWidth = i >= 8 && i <= 11 ? 1.7 : 1.1;
+          ctx.stroke();
+        });
+        pts.forEach(([px, py]) => {
+          ctx.beginPath();
+          ctx.arc(px, py, 2.2, 0, Math.PI * 2);
+          ctx.fillStyle = "#22d3ee";
+          ctx.fill();
+        });
+        requestAnimationFrame(animate);
+      })();
+    }
+
+    /* ==========================================================================
+       KHỞI TẠO SỰ KIỆN TOÀN CỤC KHI TẢI TRANG
+       ========================================================================== */
+    document.addEventListener("pointerdown", e => {
+      const target = e.target.closest(".btn-shine");
+      if (!target) return;
+      const r = target.getBoundingClientRect();
+      const size = Math.max(r.width, r.height);
+      const ripple = document.createElement("span");
+      ripple.className = "shockwave-ripple";
+      ripple.style.width = `${size}px`;
+      ripple.style.height = `${size}px`;
+      ripple.style.left = `${e.clientX - r.left - size / 2}px`;
+      ripple.style.top = `${e.clientY - r.top - size / 2}px`;
+      target.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 560);
+    });
+
+    window.addEventListener("scroll", updateLaserScrollProgress, { passive: true });
+    window.addEventListener("resize", () => { syncNavigationState(); updateLaserScrollProgress(); });
+    window.addEventListener("hashchange", () => {
+      const h = window.location.hash.replace("#", "") || "home";
+      if (h !== state.currentRoute) navigateTo(h);
+    });
+
+    window.addEventListener("keydown", e => {
+      if (state.lightbox.isOpen) {
+        if (e.key === "Escape") closeLightbox();
+        if (e.key === "ArrowRight") stepLightbox(1);
+        if (e.key === "ArrowLeft") stepLightbox(-1);
+      } else if (state.mobileDrawerOpen && e.key === "Escape") {
+        toggleMobileDrawer(false);
+      }
+    });
+
+    window.onload = function () {
+      populateMobileProjects();
+      initDesktopCustomCursor();
+
+      const lbTouch = document.getElementById("lb-touch-area");
+      if (lbTouch) {
+        let sx = 0;
+        lbTouch.addEventListener("touchstart", e => { if (e.touches[0]) sx = e.touches[0].clientX; }, { passive: true });
+        lbTouch.addEventListener("touchend", e => {
+          if (!e.changedTouches[0]) return;
+          const dx = e.changedTouches[0].clientX - sx;
+          if (Math.abs(dx) > 45) stepLightbox(dx < 0 ? 1 : -1);
+        }, { passive: true });
+      }
+
+      const initialHash = window.location.hash.replace("#", "");
+      state.currentRoute = VALID_ROUTES.has(initialHash) ? initialHash : "home";
+      renderCurrentPage();
+
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(syncNavigationState);
+      }
+    };
+  </script>
+</body>
+</html>
